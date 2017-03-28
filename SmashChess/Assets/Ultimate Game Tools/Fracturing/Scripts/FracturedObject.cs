@@ -319,7 +319,15 @@ public class FracturedObject : MonoBehaviour
         }
 
         SingleMeshObject.GetComponent<Renderer>().enabled = bEnabled;
-
+		Collider colliderSingleMesh = SingleMeshObject.GetComponent<Collider>();
+		if (colliderSingleMesh != null) 
+		{
+			colliderSingleMesh.enabled = bEnabled;
+			Rigidbody rb = GetComponent<Rigidbody>();
+			if (rb != null) {
+				Destroy (rb);
+			}
+		}
         foreach(FracturedChunk chunk in ListFracturedChunks)
         {
             if(chunk)
