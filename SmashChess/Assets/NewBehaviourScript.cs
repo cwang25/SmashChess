@@ -15,7 +15,8 @@ public class NewBehaviourScript : MonoBehaviour {
 			timeLeft -= Time.deltaTime;
 		}
 		if (timeLeft <= 0) {
-			GetComponent<FracturedObject> ().Explode (new Vector3(0.0f,0.0f,0.0f), 10.0f);
+			Vector3 objectLoc = gameObject.GetComponent<Transform> ().position;
+			GetComponent<FracturedObject> ().Explode (new Vector3(objectLoc.x,objectLoc.y-2,objectLoc.z), 6.0f);
 		}
 	}
 }

@@ -28,8 +28,8 @@ public class smashChessController : MonoBehaviour {
 				newObject.GetComponent<Rigidbody>().solverIterations = 255;
 				newObject.GetComponent<Rigidbody>().AddForce((hit.point - ray.GetPoint(0)) * InitialObjectSpeed, ForceMode.VelocityChange);
 
-				DieTimer dieTimer = newObject.AddComponent<DieTimer>() as DieTimer;
-				dieTimer.SecondsToDie = ObjectLife;
+//				DieTimer dieTimer = newObject.AddComponent<DieTimer>() as DieTimer;
+//				dieTimer.SecondsToDie = ObjectLife;
 			}
 		} else if (Input.GetMouseButton (1)) {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
