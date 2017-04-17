@@ -9,28 +9,34 @@ public class PawnScript : MonoBehaviour {
 	public Vector3 target;
 	Vector3 moveStep;
 	public float timeToReachTarget;
+	public bool StartWithMoving = false;
 	bool moving = false;
 	float t;
 	// Use this for initialization
 	void Start () {
-		startPosition = transform.position;
-		//target = new Vector3 (-2.7f,0.0f, -2.3f);
-		//timeToReachTarget = 1.0f;
-		moveStep = (target - startPosition)/timeToReachTarget;
-		t = 0;
+		if (StartWithMoving) {
+			startPosition = transform.position;
+			//target = new Vector3 (-2.7f,0.0f, -2.3f);
+			//timeToReachTarget = 1.0f;
+			moveStep = (target - startPosition)/timeToReachTarget;
+			moving = true;
+			t = 0;
+		}
 	}
 
 	// Update is called once per frame
 	void Update () {
-		t += Time.deltaTime;
-		//transform.position = Vector3.Lerp(startPosition, target, t);
-		if (t < timeToReachTarget) {
-			moving = true;
-			transform.Translate (moveStep * Time.deltaTime);
-		} else {
-			if (t >= timeToReachTarget+1) {
-				//Debug.Log ("ID: " + name + ": " + moving);
-				moving = false;
+		if (moving) {
+			t += Time.deltaTime;
+			//transform.position = Vector3.Lerp(startPosition, target, t);
+			if (t < timeToReachTarget) {
+				moving = true;
+				transform.Translate (moveStep * Time.deltaTime);
+			} else {
+				if (t >= timeToReachTarget+1) {
+					//Debug.Log ("ID: " + name + ": " + moving);
+					moving = false;
+				}
 			}
 		}
 	}
