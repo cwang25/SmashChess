@@ -1,94 +1,80 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
-public class PawnScript : MonoBehaviour {
+public class PawnScript : ChessmanScript
+{
 
-	bool destroyed = false;
-	Vector3 startPosition;
-	public Vector3 target;
-	Vector3 moveStep;
-	public float timeToReachTarget;
-	public bool StartWithMoving = false;
-	bool moving = false;
-	float t;
-	bool ignoringChessBoard = false;
-	// Use this for initialization
-	void Start () {
-		if (StartWithMoving) {
-			startPosition = transform.position;
-			//target = new Vector3 (-2.7f,0.0f, -2.3f);
-			//timeToReachTarget = 1.0f;
-			moveStep = (target - startPosition)/timeToReachTarget;
-			moving = true;
-			t = 0;
-		}
-	}
-
-	// Update is called once per frame
-	void Update () {
-		if (moving) {
-			t += Time.deltaTime;
-			//transform.position = Vector3.Lerp(startPosition, target, t);
-			if (t < timeToReachTarget) {
-				moving = true;
-				transform.Translate (moveStep * Time.deltaTime);
-			} else {
-				if (t >= timeToReachTarget + 1) {
-					//Debug.Log ("ID: " + name + ": " + moving);
-					moving = false;
+	public override bool[,] possibleMove(){
+		bool[,] r = new bool[8, 8];
+		ChessmanScript c, c2;
+		Debug.Log ("Current pos: " + CurrentX + "," + CurrentY);
+		if (!isWhite) {
+			//diagonal left
+			if (CurrentX != 0 && CurrentY != 7) {
+				c = BoardManager.Instance.Chessmans [CurrentX - 1, CurrentY + 1];
+				if (c != null && c.isWhite) {
+					r [CurrentX - 1, CurrentY + 1] = true;
 				}
 			}
-		} else if (ignoringChessBoard) {
-			foreach(Transform child in transform)
-			{
-				Collider childCollider = child.GetComponent<Collider>();
-				// do stuff with the collider
-				Physics.IgnoreCollision (childCollider, GetComponent<Collider>(), false);
+			//diagonal right
+			if (CurrentX != 7 && CurrentY != 7) {
+				c = BoardManager.Instance.Chessmans [CurrentX + 1, CurrentY + 1];
+				if (c != null && c.isWhite) {
+					r [CurrentX + 1, CurrentY + 1] = true;
+				}
 			}
-			GetComponent<Rigidbody> ().useGravity = true;
-			ignoringChessBoard = false;
-		}
-	}
-
-
-	public void OnCollisionEnter(Collision collision){
-		if(!collision.gameObject.tag.Equals("chessboard")){
-			if (!moving) {
-				destroyed = true;
-				GetComponent<FracturedObject> ().CollapseChunks();
+			//middle
+			if (CurrentY != 7){
+				c = BoardManager.Instance.Chessmans [CurrentX, CurrentY + 1];
+				if (c == null) {
+					r [CurrentX, CurrentY + 1] = true;
+				}
+			}
+			//middle first
+			if(CurrentY == 1){
+				c = BoardManager.Instance.Chessmans [CurrentX, CurrentY + 1];
+				c2 = BoardManager.Instance.Chessmans [CurrentX, CurrentY + 2];
+				if (c == null && c2 == null) {
+					r [CurrentX, CurrentY + 2] = true;
+				}
+			}
+		} else {
+			//diagonal left
+			if (CurrentX != 0 && CurrentY != 0) {
+				c = BoardManager.Instance.Chessmans [CurrentX - 1, CurrentY - 1];
+				if (c != null && !c.isWhite) {
+					r [CurrentX - 1, CurrentY + 1] = true;
+				}
+			}
+			//diagonal right
+			if (CurrentX != 7 && CurrentY != 0) {
+				c = BoardManager.Instance.Chessmans [CurrentX + 1, CurrentY - 1];
+				if (c != null && !c.isWhite) {
+					r [CurrentX + 1, CurrentY - 1] = true;
+				}
+			}
+			//middle
+			if (CurrentY != 0){
+				c = BoardManager.Instance.Chessmans [CurrentX, CurrentY - 1];
+				if (c == null) {
+					r [CurrentX, CurrentY - 1] = true;
+				}
+			}
+			//middle first
+			if(CurrentY == 6){
+				c = BoardManager.Instance.Chessmans [CurrentX, CurrentY - 1];
+				c2 = BoardManager.Instance.Chessmans [CurrentX, CurrentY - 2];
+				if (c == null && c2 == null) {
+					r [CurrentX, CurrentY - 2] = true;
+				}
 			}
 		}
-	}
 
-	public void SetDestination(Vector3 destination, float time)
-	{
-		t = 0;
-		moving = true;
-		startPosition = transform.position;
-		timeToReachTarget = time;
-		target = destination; 
-	}
-	public void IgnoreChessBoardCollision()
-	{
-		foreach(Transform child in transform)
-		{
-			Collider childCollider = child.GetComponent<Collider>();
-			// do stuff with the collider
-			Physics.IgnoreCollision (childCollider, GetComponent<Collider>());
-		}
-		//Collider cb = GameObject.FindWithTag ("chessboard").GetComponent<Collider> ();
-		ignoringChessBoard = true;
-	}
-	public void Evolve(GameObject pawn)
-	{
-		GameObject newPawn = Instantiate (pawn);
-		newPawn.transform.position = new Vector3 (this.transform.position.x,this.transform.position.y + 15,this.transform.position.z);
-		newPawn.GetComponent<PawnScript> ().IgnoreChessBoardCollision ();
-		newPawn.GetComponent<PawnScript> ().SetDestination (this.transform.position, 4);
-//		newPawn.GetComponent<Rigidbody> ().useGravity = false;
-//		newPawn.GetComponent<Rigidbody> ().isKinematic = false;
-		Rigidbody rb = newPawn.GetComponent<Rigidbody>();
-		rb.useGravity = false;
+
+
+		return r;
+
+
 	}
 }
+

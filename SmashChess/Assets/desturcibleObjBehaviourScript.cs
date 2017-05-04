@@ -16,6 +16,6 @@ public class desturcibleObjBehaviourScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision){
-		parent.GetComponent<PawnScript>().OnCollisionEnter(collision);
+		//parent.GetComponent<ChessmanScript>().OnCollisionEnter(collision);
 	}
 }
