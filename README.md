@@ -11,18 +11,22 @@ The game is now able to be played with multiple player. Game will also be able t
 4. Then run it
 # Claims
 1. Gravity Effect/Acceleration
-  So the chess shattered pieces, and chess will not fly around in the air after the collision. Because the gravity keeps it on the board as shown in screencast video.
+So the chess shattered pieces, and chess will not fly around in the air after the collision. Because the gravity keeps it on the board as shown in screencast video.
 2. Collision Effect
-  The capturing actions of each chessman have collision effect so we are able to see a wizard-like chess that chessman destroy another one by capturing it.
+The capturing actions of each chessman have collision effect so we are able to see a wizard-like chess that chessman destroy another one by capturing it.
 3. Bouncing effect
-  In the screencast video, when one chessman capture another chessman, we can see those shattered pieces has bouncing effect with the environment. (Not like rubber ball, but it has more realistic rock-like bouncing behavior)
+In the screencast video, when one chessman capture another chessman, we can see those shattered pieces has bouncing effect with the environment. (Not like rubber ball, but it has more realistic rock-like bouncing behavior)
 4. Reflection effect
-  The chess board reflects the light source of torches which meets the criteria.
+The chess board reflects the light source of torches which meets the criteria.
 5. Particles effect
-  The movable target destination indicator is implemented in a particles effect of unity and also the torches around the chess board as showing in the screencast video.
+The movable target destination indicator is implemented in a particles effect of unity and also the torches around the chess board as showing in the screencast video.
 6. Interactive control
-  User can now play the whole chess game with friends.
+User can now play the whole chess game with friends.
 
 # Screencast
 Gameplay videofff
 https://youtu.be/XPYyTJLQ1Fo
+
+# Game Links
+Build files: https://drive.google.com/open?id=0B0fPGl-8hUN2WUNjQzFyaUs5TU0
+WebGL: http://hanswang.me/myGame/csc562/﻿
