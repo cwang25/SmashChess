@@ -7,7 +7,7 @@ public class PawnScript : ChessmanScript
 	public override bool[,] possibleMove(){
 		bool[,] r = new bool[8, 8];
 		ChessmanScript c, c2;
-		Debug.Log ("Current pos: " + CurrentX + "," + CurrentY);
+		//Debug.Log ("Current pos: " + CurrentX + "," + CurrentY);
 		if (!isWhite) {
 			//diagonal left
 			if (CurrentX != 0 && CurrentY != 7) {

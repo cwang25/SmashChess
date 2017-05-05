@@ -17,6 +17,8 @@ public class ChessmanScript : MonoBehaviour {
 	public int CurrentX {set;get;}
 	public int CurrentY { set; get; }
 	public bool isWhite;
+	float deathTimer = 0;
+	float deathTime = 4.0f;
 	// Use this for initialization
 	void Start () {
 		if (StartWithMoving) {
@@ -61,6 +63,14 @@ public class ChessmanScript : MonoBehaviour {
 			GetComponent<Rigidbody> ().useGravity = true;
 			ignoringChessBoard = false;
 		}
+
+		if (destroyed) {
+			deathTimer += Time.deltaTime;
+			if (deathTimer > deathTime) {
+				Destroy (gameObject);
+			}
+		}
+
 	}
 
 	public virtual bool[,] possibleMove(){
@@ -76,7 +86,11 @@ public class ChessmanScript : MonoBehaviour {
 		CurrentX = newX;
 		CurrentY = newY;
 	}
-
+	public void SelfDestory(){
+		destroyed = true;
+		Destroy (GetComponent<Collider> ());
+		GetComponent<FracturedObject> ().CollapseChunks();
+	}
 	public void OnCollisionEnter(Collision collision){
 		if(!collision.gameObject.tag.Equals("chessboard")){
 			//Debug.Log ("Detected Collision");

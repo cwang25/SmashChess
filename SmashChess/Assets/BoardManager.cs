@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour {
 	public static BoardManager Instance {set; get;}
@@ -17,6 +18,8 @@ public class BoardManager : MonoBehaviour {
 	public ChessmanScript[,] Chessmans { set; get; }
 	private List<GameObject> activeChessmans;
 	private ChessmanScript selectedChessman;
+	public Text messageBoard;
+
 	//Huge holders for all chessmans
 	public GameObject blackRook;
 	public GameObject blackBishop;
@@ -24,7 +27,6 @@ public class BoardManager : MonoBehaviour {
 	public GameObject blackPawn;
 	public GameObject blackKing;
 	public GameObject blackQueen;
-
 	public GameObject whiteRook;
 	public GameObject whiteBishop;
 	public GameObject whiteKnight;
@@ -33,7 +35,9 @@ public class BoardManager : MonoBehaviour {
 	public GameObject whiteQueen;
 	// Use this for initialization
 	bool isWhiteTurn = true;
-
+	bool restarting = false;
+	float restartTime = 5.0f;
+	float restartTimer = 0;
 	void Start () {
 		Debug.Log ("Started");
 		Instance = this;
@@ -42,16 +46,34 @@ public class BoardManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		UpdateSelection ();
-		if (Input.GetMouseButtonDown (0)) {
-			if (selectionX >= 0 && selectionY >= 0) {
-				//Debug.Log (selectionX + " : " + selectionY+" : "+selectedChessman);
-				if (selectedChessman == null) {
-					//select Chessman
-					SelectChessman(selectionX, selectionY);
-				} else {
-					//move Chessman
-					MoveChessman(selectionX, selectionY);
+		if (restarting) {
+			isWhiteTurn = true;
+			restartTimer += Time.deltaTime;
+			if (restartTimer >= restartTime) {
+				foreach (GameObject go in activeChessmans) {
+					if (go != null && go.GetComponent<ChessmanScript> () != null) {
+						//go.GetComponent<ChessmanScript> ().SelfDestory();
+						//activeChessmans.Remove (go);
+						Destroy (go);
+					}
+				}
+				BoardHighlight.Instance.HideHighlights ();
+				setUpBoard ();
+			}
+
+			return;
+		} else {
+			UpdateSelection ();
+			if (Input.GetMouseButtonDown (0)) {
+				if (selectionX >= 0 && selectionY >= 0) {
+					//Debug.Log (selectionX + " : " + selectionY+" : "+selectedChessman);
+					if (selectedChessman == null) {
+						//select Chessman
+						SelectChessman(selectionX, selectionY);
+					} else {
+						//move Chessman
+						MoveChessman(selectionX, selectionY);
+					}
 				}
 			}
 		}
@@ -80,15 +102,34 @@ public class BoardManager : MonoBehaviour {
 		//Debug.Log (Chessmans [x, y].isWhite);
 		if (Chessmans [x, y].isWhite != isWhiteTurn)
 			return;
+		bool hasAtleastOne = false;
 		allowedMoves = Chessmans [x, y].possibleMove ();
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8 && !hasAtleastOne; j++) {
+				if (allowedMoves [i, j]) {
+					hasAtleastOne = true;
+					break;
+				}
+			}
+		}
+		if (!hasAtleastOne)
+			return;
 		selectedChessman = Chessmans [x, y];
 		BoardHighlight.Instance.highlightAollowedMoves (allowedMoves);
 	}
 	public void MoveChessman(int x, int y){
 		if (allowedMoves[x,y]) {
-			if (Chessmans [x, y] != null) {
+			ChessmanScript c = Chessmans [x, y];
+			if (c != null && c.isWhite != isWhiteTurn) {
+				if (c.GetType () == typeof(KingScript)) {
+					EndGame ();
+					return;
+				}
 				//somethign to kill
 				Chessmans[x,y].becomeDestroyable();
+				activeChessmans.Remove (Chessmans [x, y].gameObject);
+
+
 			}
 			Chessmans [selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
 			//selectedChessman.SetDestination (translateToWorldCoord (new Vector2 ((float)x,(float)y)), 3);
@@ -125,6 +166,9 @@ public class BoardManager : MonoBehaviour {
 	void setUpBoard(){
 		Chessmans = new ChessmanScript[8, 8];
 		activeChessmans = new List<GameObject> ();
+		restartTimer = 0;
+		restarting = false;
+		messageBoard.enabled = false;
 		for (int i = 0; i < 8; i++) {
 			GameObject pawnsB = Instantiate (blackPawn);
 			pawnsB.transform.position = translateToWorldCoord(new Vector2(i,1));
@@ -256,6 +300,26 @@ public class BoardManager : MonoBehaviour {
 		Chessmans [3,7] = queenW.GetComponent<ChessmanScript>();
 		Chessmans [3,7].setPosition (3,7);
 		activeChessmans.Add (queenW);
+
+	}
+
+	public void EndGame(){
+		if (isWhiteTurn) {
+			Debug.Log ("White win");
+			messageBoard.text = "White wins!";
+			messageBoard.enabled = true;
+		} else {
+			Debug.Log ("Black win");
+			messageBoard.text = "Black wins!";
+			messageBoard.enabled = true;
+		}
+		foreach (GameObject go in activeChessmans) {
+			if (go.GetComponent<ChessmanScript> ().isWhite != isWhiteTurn) {
+				go.GetComponent<ChessmanScript> ().SelfDestory();
+				//activeChessmans.Remove (go);
+			}
+		}
+		restarting = true;
 
 	}
 }
