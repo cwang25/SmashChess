@@ -35,8 +35,7 @@ The movable target destination indicator is implemented in a particles effect of
 User can now play the whole chess game with friends.
 
 # Screencast
-Gameplay videofff
-
+Gameplay video
 https://youtu.be/XPYyTJLQ1Fo
 
 # Game Links
