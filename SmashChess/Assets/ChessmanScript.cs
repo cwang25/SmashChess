@@ -43,8 +43,12 @@ public class ChessmanScript : MonoBehaviour {
 					moving = false;
 //					if(GetComponent<Collider>() != null)
 //						GetComponent<Collider> ().enabled = false;
-					if (GetComponent<Rigidbody> () != null)
-						Destroy (this.gameObject.GetComponent<Rigidbody> ());
+//					if (GetComponent<Rigidbody> () != null)
+//						Destroy (this.gameObject.GetComponent<Rigidbody> ());
+					GetComponent<Rigidbody> ().mass = 1;
+					GetComponent<Rigidbody> ().useGravity = false;
+					if(GetComponent<Collider> () != null)
+						GetComponent<Collider> ().isTrigger = true;
 				}
 			}
 		} else if (ignoringChessBoard) {
@@ -73,14 +77,17 @@ public class ChessmanScript : MonoBehaviour {
 		CurrentY = newY;
 	}
 
-	public void OnTriggerEnter(Collider collision){
+	public void OnCollisionEnter(Collision collision){
 		if(!collision.gameObject.tag.Equals("chessboard")){
 			//Debug.Log ("Detected Collision");
 
-			if (CurrentX == collision.gameObject.GetComponent<ChessmanScript>().CurrentX &&
+			if (collision.gameObject.GetComponent<ChessmanScript>() != null &&
+				CurrentX == collision.gameObject.GetComponent<ChessmanScript>().CurrentX &&
 				CurrentY == collision.gameObject.GetComponent<ChessmanScript>().CurrentY && !moving) {
 				destroyed = true;
+				Destroy (GetComponent<Collider> ());
 				GetComponent<FracturedObject> ().CollapseChunks();
+
 			}
 		}
 	}
@@ -93,11 +100,22 @@ public class ChessmanScript : MonoBehaviour {
 		timeToReachTarget = time;
 		target = destination; 
 		moveStep = (target - startPosition)/timeToReachTarget;
-		Rigidbody gameObjectsRigidBody = this.gameObject.AddComponent<Rigidbody>(); // Add the rigidbody.
-		gameObjectsRigidBody.mass = 100; // Set the GO's mass to 5 via the Rigidbody.
-		gameObjectsRigidBody.useGravity = false;
+		GetComponent<Rigidbody> ().mass = 1000;
+		GetComponent<Rigidbody> ().useGravity = true;
+		if(GetComponent<Collider> () != null)
+			GetComponent<Collider> ().isTrigger = false;
+//		Rigidbody gameObjectsRigidBody = this.gameObject.AddComponent<Rigidbody>(); // Add the rigidbody.
+//		gameObjectsRigidBody.mass = 100; // Set the GO's mass to 5 via the Rigidbody.
+//		gameObjectsRigidBody.useGravity = false;
 //		if(GetComponent<Collider> () != null)
 //			GetComponent<Collider> ().enabled = true;
+	}
+
+	public void becomeDestroyable(){
+		GetComponent<Rigidbody> ().mass = 1;
+		GetComponent<Rigidbody> ().useGravity = true;
+		if(GetComponent<Collider> () != null)
+			GetComponent<Collider> ().isTrigger = false;
 	}
 	public void IgnoreChessBoardCollision()
 	{

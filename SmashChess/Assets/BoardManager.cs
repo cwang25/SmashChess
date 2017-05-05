@@ -86,6 +86,10 @@ public class BoardManager : MonoBehaviour {
 	}
 	public void MoveChessman(int x, int y){
 		if (allowedMoves[x,y]) {
+			if (Chessmans [x, y] != null) {
+				//somethign to kill
+				Chessmans[x,y].becomeDestroyable();
+			}
 			Chessmans [selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
 			//selectedChessman.SetDestination (translateToWorldCoord (new Vector2 ((float)x,(float)y)), 3);
 			//selectedChessman.transform.position = translateToWorldCoord (new Vector2 ((float)x,(float)y));
@@ -139,7 +143,7 @@ public class BoardManager : MonoBehaviour {
 		GameObject knightB1 = Instantiate (blackKnight);
 		knightB1.transform.position = translateToWorldCoord(new Vector2(1,0));
 		knightB1.SetActive (true);
-		knightB1.transform.eulerAngles = new Vector3 (0.0f, 90.0f, 0.0f);
+		//knightB1.transform.eulerAngles = new Vector3 (0.0f, 90.0f, 0.0f);
 		Chessmans [1,0] = knightB1.GetComponent<ChessmanScript>();
 		Chessmans [1,0].setPosition (1,0);
 		activeChessmans.Add (knightB1);
@@ -147,7 +151,7 @@ public class BoardManager : MonoBehaviour {
 		GameObject knightB2 = Instantiate (blackKnight);
 		knightB2.transform.position = translateToWorldCoord(new Vector2(6,0));
 		knightB2.SetActive (true);
-		knightB2.transform.eulerAngles = new Vector3 (0.0f, 90.0f, 0.0f);
+		//knightB2.transform.eulerAngles = new Vector3 (0.0f, 90.0f, 0.0f);
 		Chessmans [6,0] = knightB2.GetComponent<ChessmanScript>();
 		Chessmans [6,0].setPosition (6,0);
 		activeChessmans.Add (knightB2);
@@ -198,7 +202,7 @@ public class BoardManager : MonoBehaviour {
 		GameObject knightW1 = Instantiate (whiteKnight);
 		knightW1.transform.position = translateToWorldCoord(new Vector2(1,7));
 		knightW1.SetActive (true);
-		knightW1.transform.eulerAngles = new Vector3 (0.0f, -90.0f, 0.0f);
+		//knightW1.transform.eulerAngles = new Vector3 (0.0f, -90.0f, 0.0f);
 		Chessmans [1,7] = knightW1.GetComponent<ChessmanScript>();
 		Chessmans [1,7].setPosition (1,7);
 		activeChessmans.Add (knightW1);
@@ -206,7 +210,7 @@ public class BoardManager : MonoBehaviour {
 		GameObject knightW2 = Instantiate (whiteKnight);
 		knightW2.transform.position = translateToWorldCoord(new Vector2(6,7));
 		knightW2.SetActive (true);
-		knightW2.transform.eulerAngles = new Vector3 (0.0f, -90.0f, 0.0f);
+		//knightW2.transform.eulerAngles = new Vector3 (0.0f, -90.0f, 0.0f);
 		Chessmans [6,7] = knightW2.GetComponent<ChessmanScript>();
 		Chessmans [6,7].setPosition (6,7);
 		activeChessmans.Add (knightW2);
